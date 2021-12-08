@@ -132,10 +132,13 @@ class YamlProvider(BaseProvider):
                     if not isinstance(data, list):
                         data = [data]
                     for d in data:
+                        recordLenient = lenient
                         if 'ttl' not in d:
                             d['ttl'] = self.default_ttl
+                        if 'octodns' in d and 'lenient' in d['octodns']:
+                            recordLenient = d['octodns']['lenient']
                         record = Record.new(zone, name, d, source=self,
-                                            lenient=lenient)
+                                            lenient=recordLenient)
                         zone.add_record(record, lenient=lenient,
                                         replace=self.populate_should_replace)
             self.log.debug('_populate_from_file: successfully loaded "%s"',
